@@ -1,5 +1,6 @@
 import csv
 
+
 def collecting_data():
     global dict_data
     dict_data={}
@@ -27,15 +28,13 @@ def read_file():
         print(row)
 
 def search():
-    f_name = input("What is your first name : ")
-    l_name = input("What is your last name : ")
-    m_name = input("Enter your middle name : ")
-    u_mail = input("Enter your email : ")
-    
+    search_key = input("What is your first name : ")
+
     with open("validation.csv","r") as f:
         handler = csv.reader(f)
-    for row in handler:
-        print(row)
+        for row in handler:
+            if search_key.lower() == dict_data["firstname"].lower() or dict_data["lastname"].lower() or dict_data["middlename"].lower() or dict_data["u_email"].lower():
+                print(row)
 
 def select():
     print("Wecome to \nchoose 1 to read your file\nchoose 2 to search through your data")

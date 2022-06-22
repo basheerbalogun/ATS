@@ -1,3 +1,9 @@
+# For your task today, duplicate your program from yesterday into another file and modify it as thus:
+# 1. After successful signup, it should prompt the user to signin.
+# 2. After successful signin, user should be presented with the options: Edit profile, Change password, Logout.
+# 3. Edit profile should ask for more information like phone_number (required), address (optional), date of birth
+#  (optional) and gender (compulsory) 
+# Happy coding!!!
 
 import csv
 
