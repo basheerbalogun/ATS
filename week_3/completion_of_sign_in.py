@@ -9,14 +9,17 @@
 #  (optional) and gender (compulsory) 
 # Happy coding!!!
 
+
+
 import csv,sys
 
 
-header=['username','firstname','lastname','password','confirm_password']
-header_2 = ['username','firstname','lastname','password','confirm_password','phone_number','address','gender','date_of_birth']
+
+header= ['username','firstname','lastname','password','phone_number','address','gender','date_of_birth']
 edited_data={}
 
 def portfolio():
+    print("\n\t=======MY PORTFOLIO=======")
     options = "\n\t1)Edit profile\n\t2)Change password\n\t3)Log out"
     prompt = input(f'{options} Choose option')
 
@@ -50,32 +53,29 @@ def sign_up():
     password = input("Enter your password (with characters not less than 8) : ")
     password_2 = input("Please confirm your password : ")
     data["password"] = password
-    data['confirm_password']= password_2
 
-    if len(password) != 8:
+
+    if len(password) >= 8:
         print("your password is strong!")
         if password_2 == password:
             print("Your password is correct")
             print("Succesfull!")
             print("you will be redirected to log in page ...")
-            log_in()
+            home()
         else:
             print("your paasword is in correct")
     elif len(password) < 8:
         print("your password is week, sorry enter the strong one to be secured")
 
-    with open('sign_in.csv', "w") as f:
+    with open('sign_in.csv', "a", newline='') as f:
         handler = csv.DictWriter(f, fieldnames=header)
-        if len(get_data()) == 0:
-            handler.writeheader()
-            handler.writerow(data)
-        else:
-            handler.writerow(data)
+        handler.writerow(data)
 
-        print("Now you can log in")
-        log_in()
+    
+
 
 def edit_profile():
+
     my_portfolio = get_data()
     previous_password = input("Enter your paasword to proceed profile editing : ")
     for portfolio in my_portfolio:
@@ -89,8 +89,10 @@ def edit_profile():
 
 def profile_editing():
         data = get_data()
-
-        
+        edited_data["username"] = input("Enter your username : ")
+        edited_data['firstname'] = input("Enetr you firstname : ")
+        edited_data['lastname'] = input("Enter your lastname : ")
+        edited_data['password'] = input("Enter your password (with characters not less than 8) : ")
         edited_data["username"] = input("Enter your username  to proceed : ")
         edited_data['phone_number']= input('Enter your phone number : ')
         edited_data['address']= input('Enter your home address: ')
@@ -98,32 +100,32 @@ def profile_editing():
         edited_data['date_of_birth'] = input("enter your age : ")
 
         for profile in data:
-            if profile['username'] == edited_data['username']:
+            if profile['password'] == edited_data['password']:
                new_edited_profile()
-
+            else:
+                return 'wrong password'
+        profile_editing()
 
 def new_edited_profile():
-    with open('sign_in.csv', "w") as rw:
-        handler = csv.DictWriter(rw, fieldnames=header_2)
-        if len(get_data()) ==0:
-            handler.writeheader()
-            handler.writerow(edited_data)
-        else:
-            handler.writerow(edited_data)
+    with open('sign_in.csv', "a") as rw:
+        handler = csv.DictWriter(rw, fieldnames=header)
+
+        handler.writerow(edited_data)
         print("You have successfully edited your profile ")
-        portfolio()
+        return handler,portfolio()
 
 
 def log_in():
-    print("\n\t\tWelcome to login page ")
+    print("\n\t\t======Welcome to login page====== ")
     login_validation = get_data()
-
+    username = input("Enter your username : ")
     u_password = input("Enter your password here : ")
-
+    
     for account in login_validation:
-        if account['password'] == u_password:
+        if account['password'] == u_password and account['username']==username:
             print("login succesfull")
             portfolio()
+
         else:
             print("wrong password ! , try again")
             log_in()
@@ -142,7 +144,7 @@ def func_old_password():
 def change_password():
     passw = new_edited_profile()
     new_password =input("Enter new password : ")
-    for ch_pass in passw:
+    for ch_pass in str(passw):
         ch_pass['password'] == new_password
 
 
@@ -151,11 +153,12 @@ def home():
     welcome="Welcome to AFEX "
     wel= welcome.center(20, "=")
     print(wel)
-    print("Do you have AFEX user account? if yes prss 1 to login else press 2 to sign up ")
+    print("Do you have AFEX user account?\n\t if yes press 1 to sign in \n\tif No press 2 to sign up ")
     choice = int(input("Enter your choice : "))
     if choice == 1:
         log_in()
     elif choice == 2:
         sign_up()
 
-home()
+if __name__ == "__main__":
+    home()

@@ -12,7 +12,6 @@
 #         handler.writerow({"basheer":"firstname","balogun":"lastname"})
 
 import csv
-import pyInputPlus as pi
 
 header = ['firstname', 'lastname', 'middlename', 'age','occupation','date_of_birth','gender','marital_status','email']
 data = [
