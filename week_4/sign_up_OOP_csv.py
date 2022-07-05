@@ -39,8 +39,8 @@ class Students:
         self.password = f.get_password()
         self.confirm_password = f.get_confirm_password()
 
-        if not self.username.isalpha():
-            return "username "
+        if not self.username.isalnum():
+            return "username is incorrect"
 
 
         Students.save_data(username = self.username, firstname = self.firstname ,middlename = self.middlename

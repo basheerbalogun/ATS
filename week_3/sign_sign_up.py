@@ -44,7 +44,7 @@ def sign_up():
 def log_in():
     user = input("Enter your username : ")
     password = input("Enter your password here : ")
-    if user == data["username"]:
+    if user == data["username"] and data['password'] == password:
         print("ling in succesfull")
     else:
         print("wrong password ! , try again")
