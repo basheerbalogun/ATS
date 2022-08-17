@@ -1,7 +1,8 @@
-
+import json
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.http import HttpResponseRedirect
+from django.core.serializers import serialize
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.views.generic import ListView, DetailView
@@ -24,14 +25,19 @@ class BlogListView(ListView):
         return Post.active_object.all()
 
 
-class PostDetailView(FormMixin,DetailView):
+class PostDetailView(FormMixin, DetailView):
     model = Post
     form_class = CommentForm
+
 
     def get_context_data(self, **kwargs):
         context = super(PostDetailView, self).get_context_data(**kwargs)
         context['form'] = self.get_form()
-        context['active_comment'] = CommentPost.active_object.all()
+        if self.request.user.id == context['post'].author.id:
+            context['active_comment'] = CommentPost.objects.all()
+        else:
+            context['active_comment'] = CommentPost.active_object.all()
+        # context['deleted-object']= CommentPost.deleted_object.all()
         return context
 
 
@@ -78,17 +84,21 @@ class ProfileDetailView(DetailView):
 def comment(request, pk):
     if request.method == "POST":
         form = CommentForm(request.POST)
+
         if form.is_valid():
             comment = form.save(commit=False)
             comment.post = Post.objects.get(id=pk)
             comment.user = request.user
             comment.save()
-            return HttpResponseRedirect(reverse("post-detail", args=[pk]))
-    context = {
-        'form': form
-    }
+            data = serialize('json', [comment, ])
+            return JsonResponse(data, status=200, safe=False)
+        return JsonResponse(form.errors, status=400)
+    #         return HttpResponseRedirect(reverse("post-detail", args=[pk]))
+    # context = {
+    #     'form': form
+    # }
 
-    return render(request, 'blog/post_detail.html', context)
+    # return render(request, 'blog/post_detail.html')
 
 
 class CommentPostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
@@ -128,7 +138,9 @@ def hide_post(request, pk):
 
 def hide_comment(request, pk):
     comment = get_object_or_404(CommentPost, id=pk)
+    com = comment.post.pk
     comment.is_hidden = not comment.is_hidden
     comment.save()
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    return HttpResponseRedirect(reverse('post-detail', args=[com]))
+
 

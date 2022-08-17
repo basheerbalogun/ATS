@@ -36,7 +36,7 @@ class Post(models.Model):
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
 
     objects = models.Manager()
-    deleted_object = HidePostManager()
+    # deleted_object = HidePostManager()
     active_object = ShowPostManager()
 
     def __str__(self):

@@ -126,7 +126,7 @@ STATIC_URL = 'static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'madia/')
 MEDIA_URL = '/media/'
 
-LOGIN_REDIRECT_URL = 'home'
+LOGIN_REDIRECT_URL = '{{request.META.HTTP_REFERER}}'
 LOGOUT_REDIRECT_URL = 'home'
 
 
